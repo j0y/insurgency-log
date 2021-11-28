@@ -409,6 +409,43 @@ const (
 	GameOverPattern = `Game Over: (\w+) (\w+) (\w+) score (\d+):(\d+) after (\d+) min`
 )
 
+const (
+	ServerMessageType         = "ServerMessage"
+	FreezTimeStartType        = "FreezTimeStart"
+	WorldMatchStartType       = "WorldMatchStart"
+	WorldRoundStartType       = "WorldRoundStart"
+	WorldRoundRestartType     = "WorldRoundRestart"
+	WorldRoundEndType         = "WorldRoundEnd"
+	WorldGameCommencingType   = "WorldGameCommencing"
+	TeamScoredType            = "TeamScored"
+	TeamNoticeType            = "TeamNotice"
+	PlayerConnectedType       = "PlayerConnected"
+	PlayerDisconnectedType    = "PlayerDisconnected"
+	PlayerEnteredType         = "PlayerEntered"
+	PlayerBannedType          = "PlayerBanned"
+	PlayerSwitchedType        = "PlayerSwitched"
+	PlayerSayType             = "PlayerSay"
+	PlayerPurchaseType        = "PlayerPurchase"
+	PlayerKillType            = "PlayerKill"
+	PlayerKillAssistType      = "PlayerKillAssist"
+	PlayerAttackType          = "PlayerAttack"
+	PlayerKilledBombType      = "PlayerKilledBomb"
+	PlayerKilledSuicideType   = "PlayerKilledSuicide"
+	PlayerPickedUpType        = "PlayerPickedUp"
+	PlayerDroppedType         = "PlayerDropped"
+	PlayerMoneyChangeType     = "PlayerMoneyChange"
+	PlayerBombGotType         = "PlayerBombGot"
+	PlayerBombPlantedType     = "PlayerBombPlanted"
+	PlayerBombDroppedType     = "PlayerBombDropped"
+	PlayerBombBeginDefuseType = "PlayerBombBeginDefuse"
+	PlayerBombDefusedType     = "PlayerBombDefused"
+	PlayerThrewType           = "PlayerThrew"
+	PlayerBlindedType         = "PlayerBlinded"
+	ProjectileSpawnedType     = "ProjectileSpawned"
+	GameOverType              = "GameOver"
+	UnknownType               = "Unknown"
+)
+
 var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(ServerMessagePattern):         NewServerMessage,
 	regexp.MustCompile(FreezTimeStartPattern):        NewFreezTimeStart,
@@ -501,44 +538,44 @@ func NewMeta(ti time.Time, ty string) Meta {
 
 func NewServerMessage(ti time.Time, r []string) Message {
 	return ServerMessage{
-		Meta: NewMeta(ti, "ServerMessage"),
+		Meta: NewMeta(ti, ServerMessageType),
 		Text: r[1],
 	}
 }
 
 func NewFreezTimeStart(ti time.Time, r []string) Message {
-	return FreezTimeStart{NewMeta(ti, "FreezTimeStart")}
+	return FreezTimeStart{NewMeta(ti, FreezTimeStartType)}
 }
 
 func NewWorldMatchStart(ti time.Time, r []string) Message {
 	return WorldMatchStart{
-		Meta: NewMeta(ti, "WorldMatchStart"),
+		Meta: NewMeta(ti, WorldMatchStartType),
 		Map:  r[1],
 	}
 }
 
 func NewWorldRoundStart(ti time.Time, r []string) Message {
-	return WorldRoundStart{NewMeta(ti, "WorldRoundStart")}
+	return WorldRoundStart{NewMeta(ti, WorldRoundStartType)}
 }
 
 func NewWorldRoundRestart(ti time.Time, r []string) Message {
 	return WorldRoundRestart{
-		Meta:     NewMeta(ti, "WorldRoundRestart"),
+		Meta:     NewMeta(ti, WorldRoundRestartType),
 		Timeleft: toInt(r[1]),
 	}
 }
 
 func NewWorldRoundEnd(ti time.Time, r []string) Message {
-	return WorldRoundEnd{NewMeta(ti, "WorldRoundEnd")}
+	return WorldRoundEnd{NewMeta(ti, WorldRoundEndType)}
 }
 
 func NewWorldGameCommencing(ti time.Time, r []string) Message {
-	return WorldGameCommencing{NewMeta(ti, "WorldGameCommencing")}
+	return WorldGameCommencing{NewMeta(ti, WorldGameCommencingType)}
 }
 
 func NewTeamScored(ti time.Time, r []string) Message {
 	return TeamScored{
-		Meta:       NewMeta(ti, "TeamScored"),
+		Meta:       NewMeta(ti, TeamScoredType),
 		Side:       r[1],
 		Score:      toInt(r[2]),
 		NumPlayers: toInt(r[3]),
@@ -547,7 +584,7 @@ func NewTeamScored(ti time.Time, r []string) Message {
 
 func NewTeamNotice(ti time.Time, r []string) Message {
 	return TeamNotice{
-		Meta:    NewMeta(ti, "TeamNotice"),
+		Meta:    NewMeta(ti, TeamNoticeType),
 		Side:    r[1],
 		Notice:  r[2],
 		ScoreCT: toInt(r[3]),
@@ -557,7 +594,7 @@ func NewTeamNotice(ti time.Time, r []string) Message {
 
 func NewPlayerConnected(ti time.Time, r []string) Message {
 	return PlayerConnected{
-		Meta: NewMeta(ti, "PlayerConnected"),
+		Meta: NewMeta(ti, PlayerConnectedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -570,7 +607,7 @@ func NewPlayerConnected(ti time.Time, r []string) Message {
 
 func NewPlayerDisconnected(ti time.Time, r []string) Message {
 	return PlayerDisconnected{
-		Meta: NewMeta(ti, "PlayerDisconnected"),
+		Meta: NewMeta(ti, PlayerDisconnectedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -583,7 +620,7 @@ func NewPlayerDisconnected(ti time.Time, r []string) Message {
 
 func NewPlayerEntered(ti time.Time, r []string) Message {
 	return PlayerEntered{
-		Meta: NewMeta(ti, "PlayerEntered"),
+		Meta: NewMeta(ti, PlayerEnteredType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -595,7 +632,7 @@ func NewPlayerEntered(ti time.Time, r []string) Message {
 
 func NewPlayerBanned(ti time.Time, r []string) Message {
 	return PlayerBanned{
-		Meta: NewMeta(ti, "PlayerBanned"),
+		Meta: NewMeta(ti, PlayerBannedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -609,7 +646,7 @@ func NewPlayerBanned(ti time.Time, r []string) Message {
 
 func NewPlayerSwitched(ti time.Time, r []string) Message {
 	return PlayerSwitched{
-		Meta: NewMeta(ti, "PlayerSwitched"),
+		Meta: NewMeta(ti, PlayerSwitchedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -623,7 +660,7 @@ func NewPlayerSwitched(ti time.Time, r []string) Message {
 
 func NewPlayerSay(ti time.Time, r []string) Message {
 	return PlayerSay{
-		Meta: NewMeta(ti, "PlayerSay"),
+		Meta: NewMeta(ti, PlayerSayType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -637,7 +674,7 @@ func NewPlayerSay(ti time.Time, r []string) Message {
 
 func NewPlayerPurchase(ti time.Time, r []string) Message {
 	return PlayerPurchase{
-		Meta: NewMeta(ti, "PlayerPurchase"),
+		Meta: NewMeta(ti, PlayerPurchaseType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -650,7 +687,7 @@ func NewPlayerPurchase(ti time.Time, r []string) Message {
 
 func NewPlayerKill(ti time.Time, r []string) Message {
 	return PlayerKill{
-		Meta: NewMeta(ti, "PlayerKill"),
+		Meta: NewMeta(ti, PlayerKillType),
 		Attacker: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -681,7 +718,7 @@ func NewPlayerKill(ti time.Time, r []string) Message {
 
 func NewPlayerKillAssist(ti time.Time, r []string) Message {
 	return PlayerKillAssist{
-		Meta: NewMeta(ti, "PlayerKillAssist"),
+		Meta: NewMeta(ti, PlayerKillAssistType),
 		Attacker: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -699,7 +736,7 @@ func NewPlayerKillAssist(ti time.Time, r []string) Message {
 
 func NewPlayerAttack(ti time.Time, r []string) Message {
 	return PlayerAttack{
-		Meta: NewMeta(ti, "PlayerAttack"),
+		Meta: NewMeta(ti, PlayerAttackType),
 		Attacker: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -733,7 +770,7 @@ func NewPlayerAttack(ti time.Time, r []string) Message {
 
 func NewPlayerKilledBomb(ti time.Time, r []string) Message {
 	return PlayerKilledBomb{
-		Meta: NewMeta(ti, "PlayerKilledBomb"),
+		Meta: NewMeta(ti, PlayerKilledBombType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -750,7 +787,7 @@ func NewPlayerKilledBomb(ti time.Time, r []string) Message {
 
 func NewPlayerKilledSuicide(ti time.Time, r []string) Message {
 	return PlayerKilledSuicide{
-		Meta: NewMeta(ti, "PlayerKilledSuicide"),
+		Meta: NewMeta(ti, PlayerKilledSuicideType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -768,7 +805,7 @@ func NewPlayerKilledSuicide(ti time.Time, r []string) Message {
 
 func NewPlayerPickedUp(ti time.Time, r []string) Message {
 	return PlayerPickedUp{
-		Meta: NewMeta(ti, "PlayerPickedUp"),
+		Meta: NewMeta(ti, PlayerPickedUpType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -781,7 +818,7 @@ func NewPlayerPickedUp(ti time.Time, r []string) Message {
 
 func NewPlayerDropped(ti time.Time, r []string) Message {
 	return PlayerDropped{
-		Meta: NewMeta(ti, "PlayerDropped"),
+		Meta: NewMeta(ti, PlayerDroppedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -794,7 +831,7 @@ func NewPlayerDropped(ti time.Time, r []string) Message {
 
 func NewPlayerMoneyChange(ti time.Time, r []string) Message {
 	return PlayerMoneyChange{
-		Meta: NewMeta(ti, "PlayerMoneyChange"),
+		Meta: NewMeta(ti, PlayerMoneyChangeType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -812,7 +849,7 @@ func NewPlayerMoneyChange(ti time.Time, r []string) Message {
 
 func NewPlayerBombGot(ti time.Time, r []string) Message {
 	return PlayerBombGot{
-		Meta: NewMeta(ti, "PlayerBombGot"),
+		Meta: NewMeta(ti, PlayerBombGotType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -824,7 +861,7 @@ func NewPlayerBombGot(ti time.Time, r []string) Message {
 
 func NewPlayerBombPlanted(ti time.Time, r []string) Message {
 	return PlayerBombPlanted{
-		Meta: NewMeta(ti, "PlayerBombPlanted"),
+		Meta: NewMeta(ti, PlayerBombPlantedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -836,7 +873,7 @@ func NewPlayerBombPlanted(ti time.Time, r []string) Message {
 
 func NewPlayerBombDropped(ti time.Time, r []string) Message {
 	return PlayerBombDropped{
-		Meta: NewMeta(ti, "PlayerBombDropped"),
+		Meta: NewMeta(ti, PlayerBombDroppedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -848,7 +885,7 @@ func NewPlayerBombDropped(ti time.Time, r []string) Message {
 
 func NewPlayerBombBeginDefuse(ti time.Time, r []string) Message {
 	return PlayerBombBeginDefuse{
-		Meta: NewMeta(ti, "PlayerBombBeginDefuse"),
+		Meta: NewMeta(ti, PlayerBombBeginDefuseType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -861,7 +898,7 @@ func NewPlayerBombBeginDefuse(ti time.Time, r []string) Message {
 
 func NewPlayerBombDefused(ti time.Time, r []string) Message {
 	return PlayerBombDefused{
-		Meta: NewMeta(ti, "PlayerBombDefused"),
+		Meta: NewMeta(ti, PlayerBombDefusedType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -873,7 +910,7 @@ func NewPlayerBombDefused(ti time.Time, r []string) Message {
 
 func NewPlayerThrew(ti time.Time, r []string) Message {
 	return PlayerThrew{
-		Meta: NewMeta(ti, "PlayerThrew"),
+		Meta: NewMeta(ti, PlayerThrewType),
 		Player: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -892,7 +929,7 @@ func NewPlayerThrew(ti time.Time, r []string) Message {
 
 func NewPlayerBlinded(ti time.Time, r []string) Message {
 	return PlayerBlinded{
-		Meta: NewMeta(ti, "PlayerBlinded"),
+		Meta: NewMeta(ti, PlayerBlindedType),
 		Victim: Player{
 			Name:    r[1],
 			ID:      toInt(r[2]),
@@ -912,7 +949,7 @@ func NewPlayerBlinded(ti time.Time, r []string) Message {
 
 func NewProjectileSpawned(ti time.Time, r []string) Message {
 	return ProjectileSpawned{
-		Meta: NewMeta(ti, "ProjectileSpawned"),
+		Meta: NewMeta(ti, ProjectileSpawnedType),
 		Position: PositionFloat{
 			X: toFloat32(r[1]),
 			Y: toFloat32(r[2]),
@@ -928,7 +965,7 @@ func NewProjectileSpawned(ti time.Time, r []string) Message {
 
 func NewGameOver(ti time.Time, r []string) Message {
 	return GameOver{
-		Meta:     NewMeta(ti, "GameOver"),
+		Meta:     NewMeta(ti, GameOverType),
 		Mode:     r[1],
 		MapGroup: r[2],
 		Map:      r[3],
@@ -940,7 +977,7 @@ func NewGameOver(ti time.Time, r []string) Message {
 
 func NewUnknown(ti time.Time, r []string) Message {
 	return Unknown{
-		Meta: NewMeta(ti, "Unknown"),
+		Meta: NewMeta(ti, UnknownType),
 		Raw:  r[1],
 	}
 }
