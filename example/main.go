@@ -3,9 +3,8 @@ package main
 import (
 	"bufio"
 	"fmt"
+	insurgencylog "my/insurgency-log"
 	"os"
-
-	"my/csgo-log"
 )
 
 // Usage:
@@ -46,14 +45,14 @@ func main() {
 	for err == nil {
 
 		// parse
-		m, errParse := csgolog.Parse(string(l))
+		m, errParse := insurgencylog.Parse(string(l))
 
 		if errParse != nil {
 			// print parse errors to stderr
-			fmt.Fprintf(os.Stderr, "ERROR: %s", csgolog.ToJSON(m))
+			fmt.Fprintf(os.Stderr, "ERROR: %s", insurgencylog.ToJSON(m))
 		} else {
 			// print to stdout
-			fmt.Fprintf(os.Stdout, "%s", csgolog.ToJSON(m))
+			fmt.Fprintf(os.Stdout, "%s", insurgencylog.ToJSON(m))
 		}
 
 		// next line

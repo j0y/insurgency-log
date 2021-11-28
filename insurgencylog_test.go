@@ -1,4 +1,4 @@
-package csgolog
+package insurgencylog
 
 import (
 	"fmt"
