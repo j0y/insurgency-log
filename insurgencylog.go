@@ -320,6 +320,12 @@ type (
 		Duration int    `json:"duration"`
 	}
 
+	// LoadingMap holds the map wich will be played when match starts
+	LoadingMap struct {
+		Meta
+		Map string `json:"map"`
+	}
+
 	// Unknown holds the raw log message of a message
 	// that is not defined in patterns but starts with time
 	Unknown struct {
@@ -407,6 +413,8 @@ const (
 	ProjectileSpawnedPattern = `Molotov projectile spawned at (-?\d+\.\d+) (-?\d+\.\d+) (-?\d+\.\d+), velocity (-?\d+\.\d+) (-?\d+\.\d+) (-?\d+\.\d+)`
 	// GameOverPattern regular expression
 	GameOverPattern = `Game Over: (\w+) (\w+) (\w+) score (\d+):(\d+) after (\d+) min`
+	// LoadingMapPattern regular expression
+	LoadingMapPattern = `Loading map "(\w+)"`
 )
 
 const (
@@ -443,6 +451,7 @@ const (
 	PlayerBlindedType         = "PlayerBlinded"
 	ProjectileSpawnedType     = "ProjectileSpawned"
 	GameOverType              = "GameOver"
+	LoadingMapType            = "LoadingMap"
 	UnknownType               = "Unknown"
 )
 
@@ -480,6 +489,7 @@ var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(PlayerBlindedPattern):         NewPlayerBlinded,
 	regexp.MustCompile(ProjectileSpawnedPattern):     NewProjectileSpawned,
 	regexp.MustCompile(GameOverPattern):              NewGameOver,
+	regexp.MustCompile(LoadingMapPattern):            NewLoadingMap,
 }
 
 // Parse parses a plain log message and returns
@@ -972,6 +982,13 @@ func NewGameOver(ti time.Time, r []string) Message {
 		ScoreCT:  toInt(r[4]),
 		ScoreT:   toInt(r[5]),
 		Duration: toInt(r[6]),
+	}
+}
+
+func NewLoadingMap(ti time.Time, r []string) Message {
+	return LoadingMap{
+		Meta: NewMeta(ti, LoadingMapType),
+		Map:  r[1],
 	}
 }
 
