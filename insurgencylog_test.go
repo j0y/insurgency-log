@@ -392,7 +392,7 @@ func TestMessages(t *testing.T) {
 	t.Run("PlayerKill", func(t *testing.T) {
 
 		// given
-		l := line(`"Player-Name<12><STEAM_1:1:0101011><TERRORIST>" [-225 -1829 -168] killed "Zim<20><BOT><CT>" [-476 -1709 -110] with "glock"`)
+		l := line(`"Player Name<2><STEAM_1:0:0101011><#Team_Security>" killed "BOT Marc<6><BOT><#Team_Insurgent>" with "m16a4<1>" at (381.666809, -462.009094, 177.031250)`)
 
 		// when
 		m, err := Parse(l)
@@ -407,25 +407,22 @@ func TestMessages(t *testing.T) {
 		// then
 		assert(t, true, ok)
 
-		assert(t, "Player-Name", pk.Attacker.Name)
-		assert(t, 12, pk.Attacker.ID)
-		assert(t, "STEAM_1:1:0101011", pk.Attacker.SteamID)
+		assert(t, "Player Name", pk.Attacker.Name)
+		assert(t, 2, pk.Attacker.ID)
+		assert(t, "STEAM_1:0:0101011", pk.Attacker.SteamID)
+		assert(t, "Security", pk.Attacker.Side)
 
-		assert(t, -225, pk.AttackerPosition.X)
-		assert(t, -1829, pk.AttackerPosition.Y)
-		assert(t, -168, pk.AttackerPosition.Z)
-
-		assert(t, "Zim", pk.Victim.Name)
-		assert(t, 20, pk.Victim.ID)
+		assert(t, "BOT Marc", pk.Victim.Name)
+		assert(t, 6, pk.Victim.ID)
 		assert(t, "BOT", pk.Victim.SteamID)
+		assert(t, "Insurgent", pk.Victim.Side)
 
-		assert(t, -476, pk.VictimPosition.X)
-		assert(t, -1709, pk.VictimPosition.Y)
-		assert(t, -110, pk.VictimPosition.Z)
+		assert(t, "m16a4", pk.Weapon)
+		assert(t, 1, pk.WeaponID)
 
-		assert(t, "glock", pk.Weapon)
-		assert(t, false, pk.Headshot)
-		assert(t, false, pk.Penetrated)
+		assert(t, float32(381.666809), pk.AttackerPosition.X)
+		assert(t, float32(-462.009094), pk.AttackerPosition.Y)
+		assert(t, float32(177.031250), pk.AttackerPosition.Z)
 	})
 
 	t.Run("PlayerKill Headshot Penetrated", func(t *testing.T) {
@@ -458,13 +455,7 @@ func TestMessages(t *testing.T) {
 		assert(t, 20, pk.Victim.ID)
 		assert(t, "BOT", pk.Victim.SteamID)
 
-		assert(t, -476, pk.VictimPosition.X)
-		assert(t, -1709, pk.VictimPosition.Y)
-		assert(t, -110, pk.VictimPosition.Z)
-
 		assert(t, "glock", pk.Weapon)
-		assert(t, true, pk.Headshot)
-		assert(t, true, pk.Penetrated)
 	})
 
 	t.Run("PlayerKillAssist", func(t *testing.T) {

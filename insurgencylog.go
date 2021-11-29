@@ -17,7 +17,6 @@ import (
 	"errors"
 	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -183,13 +182,11 @@ type (
 	// PlayerKill is received when a player kills another
 	PlayerKill struct {
 		Meta
-		Attacker         Player   `json:"attacker"`
-		AttackerPosition Position `json:"attacker_pos"`
-		Victim           Player   `json:"victim"`
-		VictimPosition   Position `json:"victim_pos"`
-		Weapon           string   `json:"weapon"`
-		Headshot         bool     `json:"headshot"`
-		Penetrated       bool     `json:"penetrated"`
+		Attacker         Player        `json:"attacker"`
+		AttackerPosition PositionFloat `json:"attacker_pos"`
+		Victim           Player        `json:"victim"`
+		Weapon           string        `json:"weapon"`
+		WeaponID         int           `json:"weapon_id"`
 	}
 
 	// PlayerKillAssist is received when a player assisted killing another
@@ -380,7 +377,7 @@ const (
 	// PlayerPurchasePattern regular expression
 	PlayerPurchasePattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" purchased "(\w+)"`
 	// PlayerKillPattern regular expression
-	PlayerKillPattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] killed "(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" \[(-?\d+) (-?\d+) (-?\d+)\] with "(\w+)" ?(\(?(headshot|penetrated|headshot penetrated)?\))?`
+	PlayerKillPattern = `"(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" killed "(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" with "(\w+)<(\d+)>" at \((-?\d+.?\d*), (-?\d+.?\d*), (-?\d+.?\d*)\)`
 	// PlayerKillAssistPattern regular expression
 	PlayerKillAssistPattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" assisted killing "(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>"`
 	// PlayerAttackPattern regular expression
@@ -704,25 +701,19 @@ func NewPlayerKill(ti time.Time, r []string) Message {
 			SteamID: r[3],
 			Side:    r[4],
 		},
-		AttackerPosition: Position{
-			X: toInt(r[5]),
-			Y: toInt(r[6]),
-			Z: toInt(r[7]),
-		},
 		Victim: Player{
-			Name:    r[8],
-			ID:      toInt(r[9]),
-			SteamID: r[10],
-			Side:    r[11],
+			Name:    r[5],
+			ID:      toInt(r[6]),
+			SteamID: r[7],
+			Side:    r[8],
 		},
-		VictimPosition: Position{
-			X: toInt(r[12]),
-			Y: toInt(r[13]),
-			Z: toInt(r[14]),
+		Weapon:   r[9],
+		WeaponID: toInt(r[10]),
+		AttackerPosition: PositionFloat{
+			X: toFloat32(r[11]),
+			Y: toFloat32(r[12]),
+			Z: toFloat32(r[13]),
 		},
-		Weapon:     r[15],
-		Headshot:   strings.Contains(r[17], "headshot"),
-		Penetrated: strings.Contains(r[17], "penetrated"),
 	}
 }
 
