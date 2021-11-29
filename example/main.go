@@ -3,7 +3,7 @@ package main
 import (
 	"bufio"
 	"fmt"
-	insurgencylog "my/insurgency-log"
+	insurgencylog "my.com/insurgency-log"
 	"os"
 )
 

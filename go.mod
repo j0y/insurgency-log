@@ -1,3 +1,3 @@
-module my/insurgency-log
+module my.com/insurgency-log
 
-go 1.13
+go 1.17
