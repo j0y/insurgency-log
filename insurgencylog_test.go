@@ -1040,6 +1040,26 @@ func TestParse(t *testing.T) {
 		assert(t, nil, err)
 		assert(t, "PlayerPurchase", m.GetType())
 	})
+
+	t.Run("RoundWin Insurgents", func(t *testing.T) {
+
+		// given
+		l := line(`Team "#Team_Insurgent" triggered "Round_Win"`)
+
+		// when
+		m, err := Parse(l)
+
+		// then
+		assert(t, nil, err)
+		assert(t, "RoundWin", m.GetType())
+
+		// when
+		pb, ok := m.(RoundWin)
+
+		// then
+		assert(t, true, ok)
+		assert(t, "Insurgent", pb.Team)
+	})
 }
 
 func TestHelpers(t *testing.T) {

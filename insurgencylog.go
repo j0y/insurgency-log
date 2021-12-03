@@ -317,10 +317,16 @@ type (
 		Duration int    `json:"duration"`
 	}
 
-	// LoadingMap holds the map wich will be played when match starts
+	// LoadingMap holds the map which will be played when match starts
 	LoadingMap struct {
 		Meta
 		Map string `json:"map"`
+	}
+
+	// RoundWin holds the team which one the round
+	RoundWin struct {
+		Meta
+		Team string `json:"team"`
 	}
 
 	// Unknown holds the raw log message of a message
@@ -376,8 +382,6 @@ const (
 	PlayerSayPattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" say(_team)? "(.*)"`
 	// PlayerPurchasePattern regular expression
 	PlayerPurchasePattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" purchased "(\w+)"`
-	// PlayerKillPattern regular expression
-	PlayerKillPattern = `"(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" killed "(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" with "(\w+)<(\d+)>" at \((-?\d+.?\d*), (-?\d+.?\d*), (-?\d+.?\d*)\)`
 	// PlayerKillAssistPattern regular expression
 	PlayerKillAssistPattern = `"(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>" assisted killing "(.+)<(\d+)><([\w:]+)><(TERRORIST|CT)>"`
 	// PlayerAttackPattern regular expression
@@ -412,6 +416,10 @@ const (
 	GameOverPattern = `Game Over: (\w+) (\w+) (\w+) score (\d+):(\d+) after (\d+) min`
 	// LoadingMapPattern regular expression
 	LoadingMapPattern = `Loading map "(\w+)"`
+	// PlayerKillPattern regular expression
+	PlayerKillPattern = `"(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" killed "(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" with "(\w+)<(\d+)>" at \((-?\d+.?\d*), (-?\d+.?\d*), (-?\d+.?\d*)\)`
+	// RoundWinPattern regular expression
+	RoundWinPattern = `Team "#Team_(Security|Insurgent)" triggered "Round_Win"`
 )
 
 const (
@@ -431,7 +439,6 @@ const (
 	PlayerSwitchedType        = "PlayerSwitched"
 	PlayerSayType             = "PlayerSay"
 	PlayerPurchaseType        = "PlayerPurchase"
-	PlayerKillType            = "PlayerKill"
 	PlayerKillAssistType      = "PlayerKillAssist"
 	PlayerAttackType          = "PlayerAttack"
 	PlayerKilledBombType      = "PlayerKilledBomb"
@@ -449,6 +456,8 @@ const (
 	ProjectileSpawnedType     = "ProjectileSpawned"
 	GameOverType              = "GameOver"
 	LoadingMapType            = "LoadingMap"
+	PlayerKillType            = "PlayerKill"
+	RoundWinType              = "RoundWin"
 	UnknownType               = "Unknown"
 )
 
@@ -469,7 +478,6 @@ var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(PlayerSwitchedPattern):        NewPlayerSwitched,
 	regexp.MustCompile(PlayerSayPattern):             NewPlayerSay,
 	regexp.MustCompile(PlayerPurchasePattern):        NewPlayerPurchase,
-	regexp.MustCompile(PlayerKillPattern):            NewPlayerKill,
 	regexp.MustCompile(PlayerKillAssistPattern):      NewPlayerKillAssist,
 	regexp.MustCompile(PlayerAttackPattern):          NewPlayerAttack,
 	regexp.MustCompile(PlayerKilledBombPattern):      NewPlayerKilledBomb,
@@ -487,6 +495,8 @@ var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(ProjectileSpawnedPattern):     NewProjectileSpawned,
 	regexp.MustCompile(GameOverPattern):              NewGameOver,
 	regexp.MustCompile(LoadingMapPattern):            NewLoadingMap,
+	regexp.MustCompile(PlayerKillPattern):            NewPlayerKill,
+	regexp.MustCompile(RoundWinPattern):              NewRoundWin,
 }
 
 // Parse parses a plain log message and returns
@@ -980,6 +990,13 @@ func NewLoadingMap(ti time.Time, r []string) Message {
 	return LoadingMap{
 		Meta: NewMeta(ti, LoadingMapType),
 		Map:  r[1],
+	}
+}
+
+func NewRoundWin(ti time.Time, r []string) Message {
+	return RoundWin{
+		Meta: NewMeta(ti, RoundWinType),
+		Team: r[1],
 	}
 }
 
