@@ -1060,6 +1060,25 @@ func TestParse(t *testing.T) {
 		assert(t, true, ok)
 		assert(t, "Insurgent", pb.Team)
 	})
+	t.Run("NextLevel", func(t *testing.T) {
+
+		// given
+		l := line(`server_cvar: "nextlevel" "crossbow checkpoint"`)
+
+		// when
+		m, err := Parse(l)
+
+		// then
+		assert(t, nil, err)
+		assert(t, "NextLevel", m.GetType())
+
+		// when
+		pb, ok := m.(NextLevel)
+
+		// then
+		assert(t, true, ok)
+		assert(t, "crossbow checkpoint", pb.Level)
+	})
 }
 
 func TestHelpers(t *testing.T) {

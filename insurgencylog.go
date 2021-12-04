@@ -333,6 +333,12 @@ type (
 		Team string `json:"team"`
 	}
 
+	// NextLevel holds the map which will be next
+	NextLevel struct {
+		Meta
+		Level string `json:"level"`
+	}
+
 	// Unknown holds the raw log message of a message
 	// that is not defined in patterns but starts with time
 	Unknown struct {
@@ -424,6 +430,8 @@ const (
 	PlayerKillPattern = `"(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" killed "(.+)<(\d+)><([\w:]+)><#Team_(Security|Insurgent)>" with "(\w+)<(\d+)>" at \((-?\d+.?\d*), (-?\d+.?\d*), (-?\d+.?\d*)\)`
 	// RoundWinPattern regular expression
 	RoundWinPattern = `Team "#Team_(Security|Insurgent)" triggered "Round_Win"`
+	// NextLevelPattern regular expression
+	NextLevelPattern = `server_cvar: "nextlevel" "([\w\s]+)"`
 )
 
 const (
@@ -462,6 +470,7 @@ const (
 	LoadingMapType            = "LoadingMap"
 	PlayerKillType            = "PlayerKill"
 	RoundWinType              = "RoundWin"
+	NextLevelType             = "NextLevel"
 	UnknownType               = "Unknown"
 )
 
@@ -501,6 +510,7 @@ var DefaultPatterns = map[*regexp.Regexp]MessageFunc{
 	regexp.MustCompile(LoadingMapPattern):            NewLoadingMap,
 	regexp.MustCompile(PlayerKillPattern):            NewPlayerKill,
 	regexp.MustCompile(RoundWinPattern):              NewRoundWin,
+	regexp.MustCompile(NextLevelPattern):             NewNextLevel,
 }
 
 // Parse parses a plain log message and returns
@@ -1001,6 +1011,13 @@ func NewRoundWin(ti time.Time, r []string) Message {
 	return RoundWin{
 		Meta: NewMeta(ti, RoundWinType),
 		Team: r[1],
+	}
+}
+
+func NewNextLevel(ti time.Time, r []string) Message {
+	return NextLevel{
+		Meta:  NewMeta(ti, NextLevelType),
+		Level: r[1],
 	}
 }
 
