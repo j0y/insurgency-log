@@ -28,6 +28,7 @@ var LogLinePattern = regexp.MustCompile(`L (\d{2}\/\d{2}\/\d{4} - \d{2}:\d{2}:\d
 
 const TeamSecurity = "Security"
 const TeamInsurgent = "Insurgent"
+const PlayerBot = "BOT"
 
 type (
 
