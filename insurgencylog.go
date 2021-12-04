@@ -26,6 +26,9 @@ var ErrorNoMatch = errors.New("no match")
 // LogLinePattern is the regular expression to capture a line of a logfile
 var LogLinePattern = regexp.MustCompile(`L (\d{2}\/\d{2}\/\d{4} - \d{2}:\d{2}:\d{2}): (.*)`)
 
+const TeamSecurity = "Security"
+const TeamInsurgent = "Insurgent"
+
 type (
 
 	// Player holds the information about a player known from log
