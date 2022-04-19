@@ -1,3 +1,3 @@
-module my.com/insurgency-log
+module github.com/j0y/insurgency-log
 
 go 1.17
